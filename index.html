@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
@@ -8,7 +8,7 @@
     :root { --primary: #4299e1; --success: #48bb78; --warning: #f6ad55; --dark: #2c5282; --bg: #f0f4ff; }
     body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(to bottom, var(--bg), #e6f0ff); margin: 0; padding: 0; color: #333; min-height: 100vh; }
     
-    /* 首頁選單樣式 */
+    /* 首頁樣式 */
     .home-container { max-width: 720px; margin: 40px auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
     .home-header { border: 5px solid #333; border-radius: 15px; padding: 30px; background: white; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 25px; }
     .home-title { font-size: 2.5rem; color: #000; margin: 0 0 10px 0; font-weight: 900; letter-spacing: 2px; }
@@ -18,7 +18,7 @@
     .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.1rem; text-decoration: underline; }
     .all-mix { border: 2px solid var(--primary); background: #ebf8ff; margin-top: 10px; }
 
-    /* 練習頁面樣式 */
+    /* 練習區樣式 */
     .quiz-container { max-width: 720px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; display: none; }
     h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 8px; font-size: 1.3rem; }
     .progress { text-align: center; color: #555; margin-bottom: 20px; font-weight: bold; }
@@ -34,21 +34,33 @@
     .next-btn { background: var(--success); }
     .home-btn { background: var(--dark); width: 100%; margin-top: 15px; }
     .reset-btn { background: var(--warning); width: 100%; margin-top: 10px; }
-    .btn:disabled { background: #edf2f7; color: #cbd5e0; cursor: not-allowed; }
 
-    /* 反饋與答案樣式 */
+    /* 答錯提示與加粗答案 */
     .result { margin-top: 16px; padding: 12px; border-radius: 8px; line-height: 1.5; font-size: 1.1rem; font-weight: bold; }
     .correct { background: #e6fffa; color: #2c7a7b; border: 1px solid #b2f5ea; }
     .incorrect { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-    .answer { margin-top: 10px; padding: 15px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 1.05rem; font-weight: 800; color: #1a202c; white-space: pre-wrap; border-left: 5px solid #cbd5e0; }
+    .answer { margin-top: 10px; padding: 15px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 1.05rem; font-weight: 800; color: #000; white-space: pre-wrap; border-left: 5px solid #333; }
+
+    /* 自定義對話框 (解決網址顯示問題) */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 9999; }
+    .modal-box { background: white; padding: 30px; border-radius: 15px; width: 80%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .modal-msg { font-size: 1.25rem; font-weight: 900; color: #e53e3e; margin-bottom: 20px; }
+    .modal-btn { background: #333; color: white; border: none; padding: 10px 40px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
 
+<div class="modal-overlay" id="alertModal">
+  <div class="modal-box">
+    <div class="modal-msg" id="modalMsg">什麼都不填是什麼意思？</div>
+    <button class="modal-btn" onclick="closeModal()">確定</button>
+  </div>
+</div>
+
 <div class="home-container" id="homePage">
   <div class="home-header">
     <h1 class="home-title">搶救英文大作戰</h1>
-    <p style="color:#666;">手機點選單元開始練習 (隨機出題)</p>
+    <p style="color:#666;">點選單元開始隨機練習</p>
   </div>
   <div class="link-group">
     <div class="practice-link" onclick="startPractice('L3')"><h2>B4L3 翻譯練習</h2></div>
@@ -106,6 +118,15 @@ function shuffleArray(array) {
   }
 }
 
+// 控制自定義視窗
+function openModal(msg) {
+  document.getElementById("modalMsg").innerText = msg;
+  document.getElementById("alertModal").style.display = "flex";
+}
+function closeModal() {
+  document.getElementById("alertModal").style.display = "none";
+}
+
 function startPractice(u) {
   currentUnit = u;
   let rawData = (u === 'ALL') ? [...db.L3, ...db.L4, ...db.M1, ...db.M2] : db[u];
@@ -142,7 +163,7 @@ function loadQuestion() {
 function checkAnswer() {
   const input = document.getElementById("userInput").value;
   if (!input.trim()) {
-    alert("什麼都不填是什麼意思？");
+    openModal("什麼都不填是什麼意思？");
     return;
   }
   
@@ -157,7 +178,7 @@ function checkAnswer() {
 function nextQuestion() {
   workingData[currentIndex].userDraft = document.getElementById("userInput").value;
   if (currentIndex < workingData.length - 1) { currentIndex++; loadQuestion(); } 
-  else { alert("練習完畢！"); goHome(); }
+  else { openModal("單元結束！快滾去休息。"); goHome(); }
 }
 
 function prevQuestion() {
@@ -167,7 +188,11 @@ function prevQuestion() {
 
 function updateScore() { document.getElementById("correctCount").textContent = workingData.filter(d => d.isCorrect).length; }
 function resetQuiz() { startPractice(currentUnit); }
-function goHome() { document.getElementById("homePage").style.display = "flex"; document.getElementById("quizPage").style.display = "none"; }
+function goHome() { 
+  document.getElementById("homePage").style.display = "flex"; 
+  document.getElementById("quizPage").style.display = "none"; 
+  closeModal();
+}
 </script>
 </body>
 </html>
