@@ -8,33 +8,33 @@
   <style>
     :root { --primary: #4299e1; --success: #48bb78; --warning: #f6ad55; --dark: #2c5282; --bg: #f0f4ff; }
     body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(to bottom, var(--bg), #e6f0ff); margin: 0; padding: 0; color: #333; min-height: 100vh; }
-    .home-container { max-width: 720px; margin: 40px auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-    .home-header { border: 5px solid #333; border-radius: 15px; padding: 30px; background: white; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 30px; }
-    .home-title { font-size: 2.5rem; color: #000; margin: 0 0 10px 0; font-weight: 900; letter-spacing: 2px; }
-    .home-desc { font-size: 1rem; color: #444; margin: 5px 0; line-height: 1.5; }
-    .link-group { width: 100%; display: flex; flex-direction: column; gap: 12px; }
-    .practice-link { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; }
+    .home-container { max-width: 720px; margin: 30px auto; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+    .home-header { border: 5px solid #333; border-radius: 15px; padding: 25px; background: white; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 25px; }
+    .home-title { font-size: 2.2rem; color: #000; margin: 0 0 10px 0; font-weight: 900; letter-spacing: 2px; }
+    .home-desc { font-size: 0.95rem; color: #444; margin: 5px 0; line-height: 1.5; }
+    .link-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+    .practice-link { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; }
     .practice-link:active { transform: scale(0.98); background: #f7fafc; }
-    .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.15rem; text-decoration: underline; }
-    .all-mix { border: 2px solid var(--primary); background: #ebf8ff; }
-    .quiz-container { max-width: 720px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; display: none; }
-    h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 8px; font-size: 1.4rem; }
-    .progress { text-align: center; color: #555; margin-bottom: 20px; font-weight: bold; }
-    .card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 24px; min-height: 300px; }
-    .chinese { font-size: 1.2rem; line-height: 1.6; margin-bottom: 16px; color: #2d3748; min-height: 60px; font-weight: 600; }
-    textarea { width: 100%; min-height: 110px; padding: 12px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; resize: vertical; box-sizing: border-box; margin-bottom: 15px; background: #fff; }
-    .btn-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-    .btn { flex: 1; min-width: 90px; padding: 12px 5px; font-size: 0.95rem; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: bold; color: white; }
+    .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.1rem; text-decoration: underline; }
+    .all-mix { border: 2px solid #e53e3e; background: #fff5f5; }
+    .quiz-container { max-width: 720px; margin: 15px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 20px; display: none; }
+    h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 5px; font-size: 1.3rem; }
+    .progress { text-align: center; color: #555; margin-bottom: 15px; font-weight: bold; font-size: 0.9rem; }
+    .card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; min-height: 280px; }
+    .chinese { font-size: 1.15rem; line-height: 1.5; margin-bottom: 15px; color: #2d3748; min-height: 50px; font-weight: 600; }
+    textarea { width: 100%; min-height: 100px; padding: 10px; font-size: 1.05rem; border: 2px solid #cbd5e0; border-radius: 8px; resize: vertical; box-sizing: border-box; margin-bottom: 12px; }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .btn { flex: 1; min-width: 80px; padding: 10px 5px; font-size: 0.9rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; }
     .check-btn { background: var(--primary); }
     .prev-btn { background: #a0aec0; }
     .next-btn { background: var(--success); }
-    .home-btn { background: var(--dark); width: 100%; margin-top: 15px; }
-    .reset-btn { background: var(--warning); width: 100%; margin-top: 10px; }
-    .btn:disabled { background: #edf2f7; color: #cbd5e0; cursor: not-allowed; }
-    .result { margin-top: 16px; padding: 12px; border-radius: 8px; line-height: 1.5; font-size: 0.95rem; }
+    .home-btn { background: var(--dark); width: 100%; margin-top: 12px; }
+    .reset-btn { background: var(--warning); width: 100%; margin-top: 8px; }
+    .btn:disabled { background: #edf2f7; color: #cbd5e0; }
+    .result { margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 0.9rem; }
     .correct { background: #e6fffa; color: #2c7a7b; border: 1px solid #b2f5ea; }
     .incorrect { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-    .answer { margin-top: 10px; padding: 12px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
+    .answer { margin-top: 8px; padding: 10px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 0.85rem; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -42,13 +42,14 @@
 <div class="home-container" id="homePage">
   <div class="home-header">
     <h1 class="home-title">搶救英文大作戰</h1>
-    <p class="home-desc">手機操作請點選下方單元開始練習</p>
     <p class="home-desc">特別為前中高二同學設計 (GO! GO! GO!)</p>
   </div>
   <div class="link-group">
-    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 L3 + L4 全部隨機練習</h2></div>
-    <div class="practice-link" onclick="startPractice('L3')"><h2>B4L3 翻譯練習</h2></div>
-    <div class="practice-link" onclick="startPractice('L4')"><h2>B4L4 翻譯練習</h2></div>
+    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 全方位隨機總複習 (8題混測)</h2></div>
+    <div class="practice-link" onclick="startPractice('L3')"><h2>B4L3 課文句型練習</h2></div>
+    <div class="practice-link" onclick="startPractice('L4')"><h2>B4L4 課文句型練習</h2></div>
+    <div class="practice-link" onclick="startPractice('M1')"><h2>妙妙卷 第一回練習</h2></div>
+    <div class="practice-link" onclick="startPractice('M2')"><h2>妙妙卷 第二回練習</h2></div>
   </div>
 </div>
 
@@ -76,13 +77,17 @@
 const db = {
   L3: [
     { zh: "為了要考上理想的大學，高中生在課業與課外活動之間取得平衡是很重要的。", en: "To get admitted to the ideal university, it is crucial that high school students strike a balance between their schoolwork and extracurricular activities." },
-    { zh: "你的計畫是否能夠進展順利取決於你願意付出多少努力於其中。", en: "Whether your plan will be on track depends on how much effort you are willing to put in." },
+    { zh: "你的計畫是否能夠進展順利取決於你願意付出多少努力於其中。", en: "Whether your plan will be on track depends on how much effort you are willing to put in." }
+  ],
+  L4: [
     { zh: "那些勇於冒險的觀光客們似乎已經在未經許可的情況下進入了原住民部落的私人領域。", en: "Those adventurous tourists seem to have entered the private areas of the indigenous tribe without permission." },
     { zh: "隨著飛魚季節即將到來，達悟族人遵循傳統準則，以確保當地的物種不會被干擾。", en: "With the flying fish season to come, the Tao people follow traditional guidelines to guarantee that local species will not be disturbed." }
   ],
-  L4: [
+  M1: [
     { zh: "位於巴黎市區的羅浮宮 (the Louvre) 是舉世聞名的博物館，也是熱門旅遊景點。", en: "Located in central Paris, the Louvre is a world-famous museum as well as a hot tourist attraction." },
-    { zh: "2025年10月，館內收藏的數件皇室珠寶遭竊，引發對博物館安全性的憂慮。", en: "In October 2025, several pieces of royal jewelry from the museum's collection were stolen, raising concerns about museum security." },
+    { zh: "2025年10月，館內收藏的數件皇室珠寶遭竊，引發對博物館安全性的憂慮。", en: "In October 2025, several pieces of royal jewelry from the museum's collection were stolen, raising concerns about museum security." }
+  ],
+  M2: [
     { zh: "熊在秋天會大量進食以儲存足夠的脂肪過冬。", en: "In fall, bears eat a lot of food to store enough fat for the winter." },
     { zh: "如果食物短缺，他們將無法冬眠，並可能在尋找食物時與人類發生衝突。", en: "If there weren't enough food, they wouldn't be able to go into a winter sleep and might come into conflict with humans while looking for food." }
   ]
@@ -93,10 +98,12 @@ function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.fl
 
 function startPractice(u) {
   currentUnit = u;
-  let rawData = (u === 'ALL') ? [...db.L3, ...db.L4] : db[u];
+  let rawData = (u === 'ALL') ? [...db.L3, ...db.L4, ...db.M1, ...db.M2] : db[u];
   workingData = rawData.map(i => ({ ...i, userDraft: "", isChecked: false, isCorrect: false }));
-  shuffle(workingData); currentIndex = 0;
-  document.getElementById("quizTitle").textContent = (u === 'ALL') ? "搶救英文 - L3+L4 綜合" : `搶救英文 - B4${u}`;
+  shuffle(workingData); 
+  currentIndex = 0;
+  const unitNames = { 'ALL': '總複習', 'L3': 'B4L3', 'L4': 'B4L4', 'M1': '妙妙卷(一)', 'M2': '妙妙卷(二)' };
+  document.getElementById("quizTitle").textContent = `搶救英文 - ${unitNames[u]}`;
   document.getElementById("homePage").style.display = "none";
   document.getElementById("quizPage").style.display = "block";
   loadQuestion();
@@ -130,7 +137,7 @@ function checkAnswer() {
 
 function nextQuestion() {
   workingData[currentIndex].userDraft = document.getElementById("userInput").value;
-  if (currentIndex < workingData.length - 1) { currentIndex++; loadQuestion(); } else { alert("練習結束！"); goHome(); }
+  if (currentIndex < workingData.length - 1) { currentIndex++; loadQuestion(); } else { alert("單元練習結束！"); goHome(); }
 }
 
 function prevQuestion() {
