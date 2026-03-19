@@ -1,198 +1,85 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>搶救英文大作戰</title>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>搶救英文-一段</title>
   <style>
     :root { --primary: #4299e1; --success: #48bb78; --warning: #f6ad55; --dark: #2c5282; --bg: #f0f4ff; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(to bottom, var(--bg), #e6f0ff); margin: 0; padding: 0; color: #333; min-height: 100vh; }
-    
-    /* 首頁樣式 */
-    .home-container { max-width: 720px; margin: 40px auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-    .home-header { border: 5px solid #333; border-radius: 15px; padding: 30px; background: white; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 25px; }
-    .home-title { font-size: 2.5rem; color: #000; margin: 0 0 10px 0; font-weight: 900; letter-spacing: 2px; }
-    .link-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-    .practice-link { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; }
-    .practice-link:active { transform: scale(0.98); background: #f7fafc; }
-    .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.1rem; text-decoration: underline; }
-    .all-mix { border: 2px solid var(--primary); background: #ebf8ff; margin-top: 10px; }
-
-    /* 練習區樣式 */
-    .quiz-container { max-width: 720px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; display: none; }
-    h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 8px; font-size: 1.3rem; }
+    body { font-family: system-ui, sans-serif; background: linear-gradient(to bottom, var(--bg), #e6f0ff); margin: 0; padding: 0; color: #333; min-height: 100vh; }
+    .quiz-container { max-width: 720px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; }
+    h1 { text-align: center; color: var(--dark); font-size: 1.3rem; }
     .progress { text-align: center; color: #555; margin-bottom: 20px; font-weight: bold; }
     .card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 24px; min-height: 300px; }
-    .chinese { font-size: 1.15rem; line-height: 1.6; margin-bottom: 16px; color: #2d3748; min-height: 50px; font-weight: 600; }
-    textarea { width: 100%; min-height: 110px; padding: 12px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; resize: vertical; box-sizing: border-box; margin-bottom: 15px; }
-    
-    /* 按鈕樣式 */
+    .chinese { font-size: 1.15rem; line-height: 1.6; margin-bottom: 16px; font-weight: 600; }
+    textarea { width: 100%; min-height: 110px; padding: 12px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; margin-bottom: 15px; }
     .btn-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-    .btn { flex: 1; min-width: 90px; padding: 12px 5px; font-size: 0.95rem; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: bold; color: white; }
+    .btn { flex: 1; min-width: 90px; padding: 12px 5px; font-size: 0.95rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; }
     .check-btn { background: var(--primary); }
-    .prev-btn { background: #a0aec0; }
     .next-btn { background: var(--success); }
     .home-btn { background: var(--dark); width: 100%; margin-top: 15px; }
-    .reset-btn { background: var(--warning); width: 100%; margin-top: 10px; }
-
-    /* 答錯提示與加粗答案 */
-    .result { margin-top: 16px; padding: 12px; border-radius: 8px; line-height: 1.5; font-size: 1.1rem; font-weight: bold; }
-    .correct { background: #e6fffa; color: #2c7a7b; border: 1px solid #b2f5ea; }
-    .incorrect { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-    .answer { margin-top: 10px; padding: 15px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 1.05rem; font-weight: 800; color: #000; white-space: pre-wrap; border-left: 5px solid #333; }
-
-    /* 自定義對話框 (解決網址顯示問題) */
+    .result { margin-top: 16px; padding: 12px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; }
+    .correct { background: #e6fffa; color: #2c7a7b; }
+    .incorrect { background: #fff5f5; color: #c53030; }
+    .answer { margin-top: 10px; padding: 15px; background: #edf2f7; border-radius: 6px; font-weight: 800; color: #000; white-space: pre-wrap; border-left: 5px solid #333; }
+    /* 自定義視窗 - 解決網址問題 */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 9999; }
-    .modal-box { background: white; padding: 30px; border-radius: 15px; width: 80%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .modal-box { background: white; padding: 30px; border-radius: 15px; width: 80%; max-width: 350px; text-align: center; }
     .modal-msg { font-size: 1.25rem; font-weight: 900; color: #e53e3e; margin-bottom: 20px; }
     .modal-btn { background: #333; color: white; border: none; padding: 10px 40px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
-
-<div class="modal-overlay" id="alertModal">
-  <div class="modal-box">
-    <div class="modal-msg" id="modalMsg">什麼都不填是什麼意思？</div>
-    <button class="modal-btn" onclick="closeModal()">確定</button>
-  </div>
-</div>
-
-<div class="home-container" id="homePage">
-  <div class="home-header">
-    <h1 class="home-title">搶救英文大作戰</h1>
-    <p style="color:#666;">點選單元開始隨機練習</p>
-  </div>
-  <div class="link-group">
-    <div class="practice-link" onclick="startPractice('L3')"><h2>B4L3 翻譯練習</h2></div>
-    <div class="practice-link" onclick="startPractice('L4')"><h2>B4L4 翻譯練習</h2></div>
-    <div class="practice-link" onclick="startPractice('M1')"><h2>妙妙卷 (第一回)</h2></div>
-    <div class="practice-link" onclick="startPractice('M2')"><h2>妙妙卷 (第二回)</h2></div>
-    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 全單元總複習</h2></div>
-  </div>
-</div>
-
-<div class="quiz-container" id="quizPage">
-  <h1 class="quiz-unit-title" id="quizTitle">搶救英文大作戰</h1>
-  <div class="progress">第 <span id="current">1</span> / <span id="total">?</span> 題　正確：<span id="correctCount">0</span> 題</div>
+<div class="modal-overlay" id="alertModal"><div class="modal-box"><div class="modal-msg" id="modalMsg">什麼都不填是什麼意思？</div><button class="modal-btn" onclick="closeModal()">確定</button></div></div>
+<div class="quiz-container">
+  <h1 id="quizTitle">一段練習</h1>
+  <div class="progress">第 <span id="current">1</span> / <span id="total">?</span> 題　正確：<span id="correctCount">0</span></div>
   <div class="card">
     <div class="chinese" id="question"></div>
     <textarea id="userInput" placeholder="請輸入翻譯..."></textarea>
     <div class="btn-group">
-      <button class="btn prev-btn" id="prevBtn" onclick="prevQuestion()">上一題</button>
       <button class="btn check-btn" onclick="checkAnswer()">檢查答案</button>
-      <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()">下一題</button>
+      <button class="btn next-btn" onclick="nextQuestion()">下一題</button>
     </div>
-    <button class="btn reset-btn" onclick="resetQuiz()">重新洗牌</button>
-    <button class="btn home-btn" onclick="goHome()">返回首頁</button>
+    <button class="btn home-btn" onclick="location.href='../index.html'">返回大廳</button>
     <div class="result" id="result" style="display:none;"></div>
     <div class="answer" id="correctAnswer" style="display:none;"></div>
   </div>
 </div>
-
 <script>
-const db = {
-  L3: [
-    { zh: "為了要考上理想的大學，高中生在課業與課外活動之間取得平衡是很重要的。", en: "To get admitted to the ideal university, it is crucial that high school students strike a balance between their schoolwork and extracurricular activities." },
-    { zh: "你的計畫是否能夠進展順利取決於你願意付出多少努力於其中。", en: "Whether your plan will be on track depends on how much effort you are willing to put in." }
-  ],
-  L4: [
-    { zh: "那些勇於冒險的觀光客們似乎已經在未經許可的情況下進入了原住民部落的私人領域。", en: "Those adventurous tourists seem to have entered the private areas of the indigenous tribe without permission." },
-    { zh: "隨著飛魚季節即將到來，達悟族人遵循傳統準則，以確保當地的物種不會被干擾。", en: "With the flying fish season to come, the Tao people follow traditional guidelines to guarantee that local species will not be disturbed." }
-  ],
-  M1: [
-    { zh: "位於巴黎市區的羅浮宮 (the Louvre) 是舉世聞名的博物館，也是熱門旅遊景點。", en: "Located in central Paris, the Louvre is a world-famous museum as well as a hot tourist attraction." },
-    { zh: "2025年10月，館內收藏的數件皇室珠寶遭竊，引發對博物館安全性的憂慮。", en: "In October 2025, several pieces of royal jewelry from the museum's collection were stolen, raising concerns about museum security." }
-  ],
-  M2: [
-    { zh: "熊在秋天會大量進食以儲存足夠的脂肪過冬。", en: "In fall, bears eat a lot of food to store enough fat for the winter." },
-    { zh: "如果食物短缺，他們將無法冬眠，並可能在尋找食物時與人類發生衝突。", en: "If there weren't enough food, they wouldn't be able to go into a winter sleep and might come into conflict with humans while looking for food." }
-  ]
-};
-
-let workingData = [], currentIndex = 0, currentUnit = "";
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-
-// 控制自定義視窗
-function openModal(msg) {
-  document.getElementById("modalMsg").innerText = msg;
-  document.getElementById("alertModal").style.display = "flex";
-}
-function closeModal() {
-  document.getElementById("alertModal").style.display = "none";
-}
-
-function startPractice(u) {
-  currentUnit = u;
-  let rawData = (u === 'ALL') ? [...db.L3, ...db.L4, ...db.M1, ...db.M2] : db[u];
-  workingData = rawData.map(i => ({ ...i, userDraft: "", isChecked: false, isCorrect: false }));
-  shuffleArray(workingData); 
-  currentIndex = 0;
-  
-  const titles = { 'L3': 'B4L3', 'L4': 'B4L4', 'M1': '妙妙卷(一)', 'M2': '妙妙卷(二)', 'ALL': '總複習' };
-  document.getElementById("quizTitle").textContent = `搶救英文 - ${titles[u]}`;
-  document.getElementById("homePage").style.display = "none";
-  document.getElementById("quizPage").style.display = "block";
-  loadQuestion();
-}
-
-function loadQuestion() {
-  const i = workingData[currentIndex];
+const db = [
+  { zh: "為了要考上理想的大學，高中生在課業與課外活動之間取得平衡是很重要的。", en: "To get admitted to the ideal university, it is crucial that high school students strike a balance between their schoolwork and extracurricular activities." },
+  { zh: "你的計畫是否能夠進展順利取決於你願意付出多少努力於其中。", en: "Whether your plan will be on track depends on how much effort you are willing to put in." },
+  { zh: "那些勇於冒險的觀光客們似乎已經在未經許可的情況下進入了原住民部落的私人領域。", en: "Those adventurous tourists seem to have entered the private areas of the indigenous tribe without permission." },
+  { zh: "隨著飛魚季節即將到來，達悟族人遵循傳統準則，以確保當地的物種不會被干擾。", en: "With the flying fish season to come, the Tao people follow traditional guidelines to guarantee that local species will not be disturbed." }
+];
+let data = db.map(i => ({...i, draft:"", checked:false, correct:false}));
+let idx = 0;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+shuffle(data);
+function load(){
+  const i = data[idx];
   document.getElementById("question").innerText = i.zh;
-  document.getElementById("userInput").value = i.userDraft;
-  document.getElementById("current").textContent = currentIndex + 1;
-  document.getElementById("total").textContent = workingData.length;
-  document.getElementById("prevBtn").disabled = (currentIndex === 0);
-  document.getElementById("nextBtn").textContent = (currentIndex === workingData.length - 1) ? "完成" : "下一題";
-  
+  document.getElementById("userInput").value = i.draft;
+  document.getElementById("current").textContent = idx + 1;
+  document.getElementById("total").textContent = data.length;
   const r = document.getElementById("result"), a = document.getElementById("correctAnswer");
-  if (i.isChecked) {
-    r.style.display = "block"; 
-    r.innerText = i.isCorrect ? "✅ 正確！" : "❌ 答錯了傻逼";
-    r.className = "result " + (i.isCorrect ? "correct" : "incorrect");
-    a.style.display = "block"; a.innerText = "參考答案：\n" + i.en;
-  } else { r.style.display = "none"; a.style.display = "none"; }
-  updateScore();
+  if(i.checked){
+    r.style.display="block"; r.innerText=i.correct?"✅ 正確！":"❌ 答錯了傻逼";
+    r.className="result "+(i.correct?"correct":"incorrect");
+    a.style.display="block"; a.innerText="參考答案：\n"+i.en;
+  }else{r.style.display="none"; a.style.display="none";}
 }
-
-function checkAnswer() {
-  const input = document.getElementById("userInput").value;
-  if (!input.trim()) {
-    openModal("什麼都不填是什麼意思？");
-    return;
-  }
-  
-  workingData[currentIndex].userDraft = input;
-  const user = input.trim().toLowerCase().replace(/[.,!?;:'"“”‘’]/g, "").replace(/\s+/g, " ");
-  const correct = workingData[currentIndex].en.toLowerCase().replace(/[.,!?;:'"“”‘’]/g, "").replace(/\s+/g, " ");
-  workingData[currentIndex].isChecked = true; 
-  workingData[currentIndex].isCorrect = (user === correct);
-  loadQuestion();
+function checkAnswer(){
+  const val = document.getElementById("userInput").value;
+  if(!val.trim()){ document.getElementById("alertModal").style.display="flex"; return; }
+  data[idx].draft = val;
+  const u = val.trim().toLowerCase().replace(/[.,!?;:'"“”‘’]/g,"").replace(/\s+/g," ");
+  const c = data[idx].en.toLowerCase().replace(/[.,!?;:'"“”‘’]/g,"").replace(/\s+/g," ");
+  data[idx].checked = true; data[idx].correct = (u === c);
+  load();
 }
-
-function nextQuestion() {
-  workingData[currentIndex].userDraft = document.getElementById("userInput").value;
-  if (currentIndex < workingData.length - 1) { currentIndex++; loadQuestion(); } 
-  else { openModal("單元結束！快滾去休息。"); goHome(); }
-}
-
-function prevQuestion() {
-  workingData[currentIndex].userDraft = document.getElementById("userInput").value;
-  if (currentIndex > 0) { currentIndex--; loadQuestion(); }
-}
-
-function updateScore() { document.getElementById("correctCount").textContent = workingData.filter(d => d.isCorrect).length; }
-function resetQuiz() { startPractice(currentUnit); }
-function goHome() { 
-  document.getElementById("homePage").style.display = "flex"; 
-  document.getElementById("quizPage").style.display = "none"; 
-  closeModal();
-}
+function nextQuestion(){ if(idx < data.length-1){ idx++; load(); }else{ alert("結束！"); location.href='../index.html'; } }
+function closeModal(){ document.getElementById("alertModal").style.display="none"; }
+load();
 </script>
 </body>
 </html>
