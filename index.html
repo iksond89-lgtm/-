@@ -1,19 +1,26 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>搶救英文大作戰傳送門</title>
   <style>
-    body { font-family: system-ui, sans-serif; background: #f0f4ff; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-    h1 { color: #2c5282; font-size: 1.8rem; margin-bottom: 30px; font-weight: 900; }
+    /* 1. 背景改淺黃色並加點漸層 */
+    body { font-family: system-ui, sans-serif; background: linear-gradient(to bottom, #fffdf0, #fff9e6); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    
+    /* 2. 標題顏色改暖色調搭配背景 */
+    h1 { color: #856404; font-size: 1.8rem; margin-bottom: 30px; font-weight: 900; }
+    
+    /* 3. 按鈕框改褐色調搭配 */
     .btn { 
       display: block; width: 260px; padding: 20px; margin: 12px; 
-      background: white; color: #2c5282; text-decoration: none; 
+      background: white; color: #856404; text-decoration: none; 
       text-align: center; border-radius: 15px; font-weight: bold; 
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #2c5282;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #b58900;
       transition: 0.2s; font-size: 1.1rem;
     }
-    .btn:active { transform: scale(0.95); background: #ebf8ff; }
+    
+    /* 4. 按下去的變色改米色搭配 */
+    .btn:active { transform: scale(0.95); background: #fffdf0; }
   </style>
 </head>
 <body>
