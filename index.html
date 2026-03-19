@@ -4,13 +4,8 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>搶救英文大作戰傳送門</title>
   <style>
-    /* 1. 背景改淺黃色並加點漸層 */
     body { font-family: system-ui, sans-serif; background: linear-gradient(to bottom, #fffdf0, #fff9e6); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-    
-    /* 2. 標題顏色改暖色調搭配背景 */
-    h1 { color: #856404; font-size: 1.8rem; margin-bottom: 30px; font-weight: 900; }
-    
-    /* 3. 按鈕框改褐色調搭配 */
+    h1 { color: #856404; font-size: 1.8rem; margin-bottom: 30px; font-weight: 900; white-space: nowrap; }
     .btn { 
       display: block; width: 260px; padding: 20px; margin: 12px; 
       background: white; color: #856404; text-decoration: none; 
@@ -18,14 +13,15 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #b58900;
       transition: 0.2s; font-size: 1.1rem;
     }
-    
-    /* 4. 按下去的變色改米色搭配 */
     .btn:active { transform: scale(0.95); background: #fffdf0; }
+    /* 三段按鈕特別顏色，提醒自己還在準備中 */
+    .btn-next { border-style: dashed; opacity: 0.8; }
   </style>
 </head>
 <body>
   <h1>搶救英文大作戰</h1>
   <a href="exam1/index.html" class="btn">第一次段考練習</a>
-  <a href="exam2/index.html" class="btn">第二次段考練習 (準備中)</a>
+  <a href="exam2/index.html" class="btn">第二次段考練習</a>
+  <a href="exam3/index.html" class="btn btn-next">第三次段考練習 (準備中)</a>
 </body>
 </html>
