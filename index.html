@@ -16,6 +16,7 @@
     .practice-link { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; }
     .practice-link:active { transform: scale(0.98); background: #f7fafc; }
     .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.15rem; text-decoration: underline; }
+    .all-mix { border: 2px solid var(--primary); background: #ebf8ff; }
     .quiz-container { max-width: 720px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; display: none; }
     h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 8px; font-size: 1.4rem; }
     .progress { text-align: center; color: #555; margin-bottom: 20px; font-weight: bold; }
@@ -30,10 +31,10 @@
     .home-btn { background: var(--dark); width: 100%; margin-top: 15px; }
     .reset-btn { background: var(--warning); width: 100%; margin-top: 10px; }
     .btn:disabled { background: #edf2f7; color: #cbd5e0; cursor: not-allowed; }
-    .result { margin-top: 16px; padding: 12px; border-radius: 8px; line-height: 1.5; font-size: 0.95rem; display: none; }
+    .result { margin-top: 16px; padding: 12px; border-radius: 8px; line-height: 1.5; font-size: 0.95rem; }
     .correct { background: #e6fffa; color: #2c7a7b; border: 1px solid #b2f5ea; }
     .incorrect { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-    .answer { margin-top: 10px; padding: 12px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 0.9rem; word-break: break-all; display: none; }
+    .answer { margin-top: 10px; padding: 12px; background: #edf2f7; border-radius: 6px; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -45,6 +46,7 @@
     <p class="home-desc">特別為前中高二同學設計 (GO! GO! GO!)</p>
   </div>
   <div class="link-group">
+    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 L3 + L4 全部隨機練習</h2></div>
     <div class="practice-link" onclick="startPractice('L3')"><h2>B4L3 翻譯練習</h2></div>
     <div class="practice-link" onclick="startPractice('L4')"><h2>B4L4 翻譯練習</h2></div>
   </div>
@@ -63,8 +65,10 @@
     </div>
     <button class="btn reset-btn" onclick="resetQuiz()">重新洗牌此單元</button>
     <button class="btn home-btn" onclick="goHome()">返回首頁選單</button>
-    <div class="result" id="result"></div>
-    <div class="answer" id="correctAnswer"></div>
+    <div id="feedbackArea">
+      <div class="result" id="result" style="display:none;"></div>
+      <div class="answer" id="correctAnswer" style="display:none;"></div>
+    </div>
   </div>
 </div>
 
@@ -86,14 +90,18 @@ const db = {
 
 let workingData = [], currentIndex = 0, currentUnit = "";
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } }
+
 function startPractice(u) {
   currentUnit = u;
-  workingData = db[u].map(i => ({ ...i, userDraft: "", isChecked: false, isCorrect: false }));
+  let rawData = (u === 'ALL') ? [...db.L3, ...db.L4] : db[u];
+  workingData = rawData.map(i => ({ ...i, userDraft: "", isChecked: false, isCorrect: false }));
   shuffle(workingData); currentIndex = 0;
+  document.getElementById("quizTitle").textContent = (u === 'ALL') ? "搶救英文 - L3+L4 綜合" : `搶救英文 - B4${u}`;
   document.getElementById("homePage").style.display = "none";
   document.getElementById("quizPage").style.display = "block";
   loadQuestion();
 }
+
 function loadQuestion() {
   const i = workingData[currentIndex];
   document.getElementById("question").innerText = i.zh;
@@ -103,10 +111,14 @@ function loadQuestion() {
   document.getElementById("prevBtn").disabled = (currentIndex === 0);
   document.getElementById("nextBtn").textContent = (currentIndex === workingData.length - 1) ? "完成" : "下一題";
   const r = document.getElementById("result"), a = document.getElementById("correctAnswer");
-  if (i.isChecked) { r.style.display = "block"; r.innerText = i.isCorrect ? "✅ 正確！" : "❌ 建議參考答案："; r.className = "result " + (i.isCorrect ? "correct" : "incorrect"); a.style.display = "block"; a.innerText = i.en; } 
-  else { r.style.display = "none"; a.style.display = "none"; }
+  if (i.isChecked) {
+    r.style.display = "block"; r.innerText = i.isCorrect ? "✅ 正確！" : "❌ 建議參考答案：";
+    r.className = "result " + (i.isCorrect ? "correct" : "incorrect");
+    a.style.display = "block"; a.innerText = i.en;
+  } else { r.style.display = "none"; a.style.display = "none"; }
   updateScore();
 }
+
 function checkAnswer() {
   const input = document.getElementById("userInput").value; workingData[currentIndex].userDraft = input;
   if (!input.trim()) return;
@@ -115,14 +127,17 @@ function checkAnswer() {
   workingData[currentIndex].isChecked = true; workingData[currentIndex].isCorrect = (user === correct);
   loadQuestion();
 }
+
 function nextQuestion() {
   workingData[currentIndex].userDraft = document.getElementById("userInput").value;
   if (currentIndex < workingData.length - 1) { currentIndex++; loadQuestion(); } else { alert("練習結束！"); goHome(); }
 }
+
 function prevQuestion() {
   workingData[currentIndex].userDraft = document.getElementById("userInput").value;
   if (currentIndex > 0) { currentIndex--; loadQuestion(); }
 }
+
 function updateScore() { document.getElementById("correctCount").textContent = workingData.filter(d => d.isCorrect).length; }
 function resetQuiz() { startPractice(currentUnit); }
 function goHome() { document.getElementById("homePage").style.display = "flex"; document.getElementById("quizPage").style.display = "none"; }
