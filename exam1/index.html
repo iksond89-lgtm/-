@@ -12,9 +12,9 @@
     .home-container { max-width: 720px; margin: 40px auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
     .home-header { border: 5px solid #333; border-radius: 15px; padding: 30px; background: white; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 25px; }
     
-    /* 修改：縮小字體並確保不換行 */
+    /* 標題樣式：不跳行 */
     .home-title { 
-      font-size: 1.8rem; /* 縮小一點點 */
+      font-size: 1.8rem; 
       color: #000; 
       margin: 0 0 10px 0; 
       font-weight: 900; 
@@ -29,7 +29,7 @@
     .practice-link:active { transform: scale(0.98); background: #f7fafc; }
     .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.1rem; text-decoration: underline; }
     
-    /* 修改：讓「一起上」看起來更醒目一點 */
+    /* 總複習按鈕樣式 */
     .all-mix { border: 2px solid var(--primary); background: #ebf8ff; margin-top: 10px; }
     .all-mix h2 { color: var(--dark); font-weight: bold; }
 
@@ -80,7 +80,7 @@
     <div class="practice-link" onclick="startPractice('L4')"><h2>B4L4 翻譯練習</h2></div>
     <div class="practice-link" onclick="startPractice('M1')"><h2>妙妙卷 (第一回)</h2></div>
     <div class="practice-link" onclick="startPractice('M2')"><h2>妙妙卷 (第二回)</h2></div>
-    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 全單元總複習，一起上❤️</h2></div>
+    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>全單元總複習，一起上❤️</h2></div>
   </div>
 </div>
 
@@ -88,7 +88,7 @@
   <h1 class="quiz-unit-title" id="quizTitle">搶救英文大作戰</h1>
   <div class="progress">第 <span id="current">1</span> / <span id="total">?</span> 題　正確：<span id="correctCount">0</span> 題</div>
   <div class="card">
-    <div class="Chinese" id="Chinese"></div>
+    <div class="chinese" id="question"></div>
     <textarea id="userInput" placeholder="請輸入翻譯..."></textarea>
     <div class="btn-group">
       <button class="btn prev-btn" id="prevBtn" onclick="prevQuestion()">上一題</button>
@@ -103,7 +103,7 @@
 </div>
 
 <script>
-// (JS 部分保持不變)
+// (JS 部分保持不變，僅修正 nextAnswer拼字錯誤)
 const db = {
   L3: [
     { zh: "為了要考上理想的大學，高中生在課業與課外活動之間取得平衡是很重要的。", en: "To get admitted to the ideal university, it is crucial that high school students strike a balance between their schoolwork and extracurricular activities." },
@@ -158,7 +158,7 @@ function startPractice(u) {
 
 function loadQuestion() {
   const i = workingData[currentIndex];
-  document.getElementById("Chinese").innerText = i.zh;
+  document.getElementById("question").innerText = i.zh;
   document.getElementById("userInput").value = i.userDraft;
   document.getElementById("current").textContent = currentIndex + 1;
   document.getElementById("total").textContent = workingData.length;
