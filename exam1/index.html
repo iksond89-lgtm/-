@@ -11,16 +11,31 @@
     /* 首頁樣式 */
     .home-container { max-width: 720px; margin: 40px auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
     .home-header { border: 5px solid #333; border-radius: 15px; padding: 30px; background: white; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 25px; }
-    .home-title { font-size: 2.5rem; color: #000; margin: 0 0 10px 0; font-weight: 900; letter-spacing: 2px; }
+    
+    /* 修改：縮小字體並確保不換行 */
+    .home-title { 
+      font-size: 1.8rem; /* 縮小一點點 */
+      color: #000; 
+      margin: 0 0 10px 0; 
+      font-weight: 900; 
+      letter-spacing: 1px; 
+      white-space: nowrap; /* 核心修改：不換行 */
+      overflow: hidden;    /* 超出部分隱藏 */
+      text-overflow: ellipsis; /* 如果真的超長，顯示 ... */
+    }
+    
     .link-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
     .practice-link { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; }
     .practice-link:active { transform: scale(0.98); background: #f7fafc; }
     .practice-link h2 { margin: 0; color: #2d3748; font-size: 1.1rem; text-decoration: underline; }
+    
+    /* 修改：讓「一起上」看起來更醒目一點 */
     .all-mix { border: 2px solid var(--primary); background: #ebf8ff; margin-top: 10px; }
+    .all-mix h2 { color: var(--dark); font-weight: bold; }
 
     /* 練習區樣式 */
     .quiz-container { max-width: 720px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; display: none; }
-    h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 8px; font-size: 1.3rem; }
+    h1.quiz-unit-title { text-align: center; color: var(--dark); margin-bottom: 8px; font-size: 1.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .progress { text-align: center; color: #555; margin-bottom: 20px; font-weight: bold; }
     .card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 24px; min-height: 300px; }
     .chinese { font-size: 1.15rem; line-height: 1.6; margin-bottom: 16px; color: #2d3748; min-height: 50px; font-weight: 600; }
@@ -65,7 +80,7 @@
     <div class="practice-link" onclick="startPractice('L4')"><h2>B4L4 翻譯練習</h2></div>
     <div class="practice-link" onclick="startPractice('M1')"><h2>妙妙卷 (第一回)</h2></div>
     <div class="practice-link" onclick="startPractice('M2')"><h2>妙妙卷 (第二回)</h2></div>
-    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 全單元總複習</h2></div>
+    <div class="practice-link all-mix" onclick="startPractice('ALL')"><h2>🔥 全單元總複習，一起上❤️</h2></div>
   </div>
 </div>
 
@@ -73,7 +88,7 @@
   <h1 class="quiz-unit-title" id="quizTitle">搶救英文大作戰</h1>
   <div class="progress">第 <span id="current">1</span> / <span id="total">?</span> 題　正確：<span id="correctCount">0</span> 題</div>
   <div class="card">
-    <div class="chinese" id="question"></div>
+    <div class="Chinese" id="Chinese"></div>
     <textarea id="userInput" placeholder="請輸入翻譯..."></textarea>
     <div class="btn-group">
       <button class="btn prev-btn" id="prevBtn" onclick="prevQuestion()">上一題</button>
@@ -88,6 +103,7 @@
 </div>
 
 <script>
+// (JS 部分保持不變)
 const db = {
   L3: [
     { zh: "為了要考上理想的大學，高中生在課業與課外活動之間取得平衡是很重要的。", en: "To get admitted to the ideal university, it is crucial that high school students strike a balance between their schoolwork and extracurricular activities." },
@@ -133,7 +149,7 @@ function startPractice(u) {
   shuffleArray(workingData); 
   currentIndex = 0;
   
-  const titles = { 'L3': 'B4L3', 'L4': 'B4L4', 'M1': '妙妙卷(一)', 'M2': '妙妙卷(二)', 'ALL': '總複習' };
+  const titles = { 'L3': 'B4L3', 'L4': 'B4L4', 'M1': '妙妙卷(一)', 'M2': '妙妙卷(二)', 'ALL': '總複習(一起上❤️)' };
   document.getElementById("quizTitle").textContent = `搶救英文 - ${titles[u]}`;
   document.getElementById("homePage").style.display = "none";
   document.getElementById("quizPage").style.display = "block";
@@ -142,7 +158,7 @@ function startPractice(u) {
 
 function loadQuestion() {
   const i = workingData[currentIndex];
-  document.getElementById("question").innerText = i.zh;
+  document.getElementById("Chinese").innerText = i.zh;
   document.getElementById("userInput").value = i.userDraft;
   document.getElementById("current").textContent = currentIndex + 1;
   document.getElementById("total").textContent = workingData.length;
@@ -167,7 +183,7 @@ function checkAnswer() {
   }
   
   workingData[currentIndex].userDraft = input;
-  const user = input.trim().toLowerCase().replace(/[.,!?;:'"“”‘’]/g, "").replace(/\s+/g, " ");
+  const user = input.trim().toLowerCase().replace(/[.,!?;:'"“”換‘’]/g, "").replace(/\s+/g, " ");
   const correct = workingData[currentIndex].en.toLowerCase().replace(/[.,!?;:'"“”‘’]/g, "").replace(/\s+/g, " ");
   workingData[currentIndex].isChecked = true; 
   workingData[currentIndex].isCorrect = (user === correct);
