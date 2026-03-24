@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>英文翻譯複習 - 精確分類版</title>
+  <title>英文翻譯複習 - 隨機挑戰版</title>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; background: #f0f4ff; margin: 0; padding: 20px; color: #333; }
     .container { max-width: 720px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; }
@@ -41,7 +41,7 @@
     <button class="unit-btn" onclick="switchUnit('L4')">課本 L4</button>
     <button class="unit-btn" onclick="switchUnit('R1')">妙妙 R1</button>
     <button class="unit-btn" onclick="switchUnit('R2')">妙妙 R2</button>
-    <button class="unit-btn unit-all" onclick="switchUnit('ALL')"> 一起上❤️</button>
+    <button class="unit-btn unit-all" onclick="switchUnit('ALL')">一起上❤️(隨機)</button>
   </div>
 
   <div class="progress">
@@ -87,10 +87,19 @@ const allData = {
 let currentUnit = 'L3';
 let index = 0;
 let userResponses = { 'L3': [], 'L4': [], 'R1': [], 'R2': [], 'ALL': [] };
-let combinedData = [];
+let activeData = [];
 
 function superNormalize(s) {
   return s.toLowerCase().replace(/[.,!?;:"']/g, " ").replace(/\s+/g, " ").trim();
+}
+
+// 隨機洗牌函式
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 function switchUnit(unitKey) {
@@ -103,50 +112,50 @@ function switchUnit(unitKey) {
     else if(btn.innerText.includes(unitKey)) btn.classList.add('active');
   });
 
-  const names = {'L3':'課本 L3', 'L4':'課本 L4', 'R1':'妙妙 R1', 'R2':'妙妙 R2', 'ALL':'全部一起練習'};
+  const names = {'L3':'課本 L3', 'L4':'課本 L4', 'R1':'妙妙 R1', 'R2':'妙妙 R2', 'ALL':'✨ 全部隨機挑戰'};
   document.getElementById("unitTitle").innerText = names[unitKey];
 
   if(unitKey === 'ALL') {
-    combinedData = [...allData['L3'], ...allData['L4'], ...allData['R1'], ...allData['R2']];
+    // 合併所有題目並洗牌
+    activeData = shuffle([...allData['L3'], ...allData['L4'], ...allData['R1'], ...allData['R2']]);
+  } else {
+    activeData = [...allData[unitKey]];
   }
   
   load();
 }
 
 function load() {
-  const data = currentUnit === 'ALL' ? combinedData : allData[currentUnit];
-  if (index >= data.length) {
+  if (index >= activeData.length) {
     document.getElementById("quizContainer").innerHTML = `<h2>🎉 ${document.getElementById("unitTitle").innerText} 完成！</h2><button class='btn check-btn' style='width:100%' onclick='location.reload()'>返回主選單</button>`;
     return;
   }
-  document.getElementById("question").innerText = data[index].zh;
+  document.getElementById("question").innerText = activeData[index].zh;
   document.getElementById("input").value = userResponses[currentUnit][index] || "";
   document.getElementById("current").innerText = index + 1;
-  document.getElementById("total").innerText = data.length;
+  document.getElementById("total").innerText = activeData.length;
   document.getElementById("result").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
   document.getElementById("prevBtn").disabled = (index === 0);
 }
 
 function check() {
-  const data = currentUnit === 'ALL' ? combinedData : allData[currentUnit];
   let userText = document.getElementById("input").value;
   if (!userText.trim()) return;
   userResponses[currentUnit][index] = userText;
   
-  if (superNormalize(userText) === superNormalize(data[index].en)) {
+  if (superNormalize(userText) === superNormalize(activeData[index].en)) {
     document.getElementById("result").innerHTML = "<span class='correct'>✅ 正確！自動跳下一題...</span>";
     setTimeout(next, 800);
   } else {
-    document.getElementById("result").innerHTML = "<span class='incorrect'>答錯了傻逼：</span>";
-    document.getElementById("answer").innerHTML = `<div class='blue-answer'>💡 參考答案：<br>${data[index].en}</div>`;
+    document.getElementById("result").innerHTML = "<span class='incorrect'>❌答錯了傻逼：</span>";
+    document.getElementById("answer").innerHTML = `<div class='blue-answer'>💡 參考答案：<br>${activeData[index].en}</div>`;
   }
 }
 
 function next() {
-  const data = currentUnit === 'ALL' ? combinedData : allData[currentUnit];
   userResponses[currentUnit][index] = document.getElementById("input").value;
-  if (index < data.length) { index++; load(); }
+  if (index < activeData.length) { index++; load(); }
 }
 
 function prev() {
@@ -155,7 +164,12 @@ function prev() {
 }
 
 function resetUnit() {
-  if(confirm("確定重來本單元嗎？")) { userResponses[currentUnit] = []; index = 0; load(); }
+  if(confirm("確定重來本單元嗎？")) { 
+    userResponses[currentUnit] = []; 
+    if(currentUnit === 'ALL') activeData = shuffle(activeData); // 重來時再次洗牌
+    index = 0; 
+    load(); 
+  }
 }
 
 switchUnit('L3');
