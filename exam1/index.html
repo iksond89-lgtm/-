@@ -5,34 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>英文翻譯複習 - 高中句型練習</title>
   <style>
-    body { font-family: system-ui, sans-serif; background: #f0f4ff; padding: 20px; }
+    body { font-family: system-ui, sans-serif; background: #f0f4ff; padding: 20px; margin: 0; }
     .container { max-width: 720px; margin: 0 auto; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-    h1 { text-align: center; color: #2c5282; }
-    .progress { text-align: center; margin-bottom: 20px; }
-    .chinese { font-size: 1.2rem; margin-bottom: 12px; font-weight: bold; }
-    textarea { width: 100%; min-height: 100px; padding: 10px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; }
-    .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-    .btn { flex: 1; padding: 12px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
+    h1 { text-align: center; color: #2c5282; margin-bottom: 10px; font-size: 1.5rem; }
+    .progress { text-align: center; margin-bottom: 20px; color: #666; font-size: 0.9rem; }
+    .chinese { font-size: 1.2rem; margin-bottom: 12px; font-weight: bold; color: #2d3748; line-height: 1.5; }
+    textarea { width: 100%; min-height: 110px; padding: 12px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; outline: none; }
+    
+    .btn-group { display: flex; gap: 8px; margin-top: 15px; }
+    .btn { flex: 1; padding: 12px 5px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; font-size: 0.95rem; }
     .check-btn { background: #4299e1; color: white; }
     .nav-btn { background: #a0aec0; color: white; }
-    #result { margin-top: 15px; font-weight: bold; }
+    .reset-btn { width: 100%; margin-top: 10px; background: #f6ad55; color: white; border: none; border-radius: 6px; padding: 10px; font-weight: bold; }
+    .btn:disabled { opacity: 0.5; }
+
+    #result { margin-top: 15px; font-weight: bold; min-height: 1.5em; }
     .correct { color: #48bb78; }
     .incorrect { color: #f56565; }
-    /* 藍色參考答案 */
-    .blue-answer { color: #2b6cb0; font-weight: bold; margin-top: 10px; padding: 10px; background: #ebf8ff; border-radius: 5px; line-height: 1.5; }
+    .blue-answer { color: #2b6cb0; font-weight: bold; margin-top: 10px; padding: 15px; background: #ebf8ff; border-left: 5px solid #2b6cb0; border-radius: 4px; line-height: 1.6; }
   </style>
 </head>
 <body>
+
 <div class="container">
-  <h1>✍️ 英文翻譯複習</h1>
-  <div class="progress">第 <span id="current">1</span> / <span id="total">8</span> 題 | 得分：<span id="score">0</span></div>
+  <h1>✍️ 英文翻譯衝刺</h1>
+  <div class="progress">第 <span id="current">1</span> / <span id="total">8</span> 題 | 目前得分：<span id="score">0</span></div>
+
   <div class="card">
-    <div id="question" class="chinese"></div>
-    <textarea id="input" placeholder="請在此輸入英文翻譯..."></textarea>
+    <div id="question" class="chinese">載入中...</div>
+    <textarea id="input" placeholder="在此輸入答案...標點與空格不計"></textarea>
+    
     <div class="btn-group">
-      <button class="btn nav-btn" onclick="prev()">⬅️ 上一題</button>
+      <button class="btn nav-btn" id="prevBtn" onclick="prev()">⬅️ 上一題</button>
       <button class="btn check-btn" onclick="check()">🔍 檢查答案</button>
+      <button class="btn nav-btn" onclick="next()">下一題 ➡️</button>
     </div>
+    <button class="reset-btn" onclick="reset()">🔄 全部重來</button>
+
     <div id="result"></div>
     <div id="answer"></div>
   </div>
@@ -54,14 +63,17 @@ let index = 0;
 let score = 0;
 let userResponses = new Array(data.length).fill("");
 
-function normalize(s) {
-  // 修正重點：將所有標點符號取代為空格，並將多個空格縮減為一個，確保判定更寬鬆
-  return s.toLowerCase().replace(/[.,!?]/g, " ").replace(/\s+/g, " ").trim();
+// 超強格式化：移除標點，並把所有空白(空格、換行)都縮減成單一空格
+function superNormalize(s) {
+  return s.toLowerCase()
+          .replace(/[.,!?;:"']/g, " ") // 所有標點變空格
+          .replace(/\s+/g, " ")        // 所有連續空白縮成一個空格
+          .trim();                     // 去除首尾空白
 }
 
 function load() {
   if (index >= data.length) {
-    document.querySelector(".card").innerHTML = "<h2>🎉 恭喜完成！</h2><p>最終得分：" + score + "</p><button class='btn check-btn' onclick='location.reload()'>再練習一次</button>";
+    document.querySelector(".card").innerHTML = "<h2 style='text-align:center;'>🎉 練習完成！</h2><p style='text-align:center;'>得分：" + score + "</p><button class='btn check-btn' style='width:100%' onclick='location.reload()'>重新開始</button>";
     return;
   }
   document.getElementById("question").innerText = data[index].zh;
@@ -71,28 +83,40 @@ function load() {
   document.getElementById("score").innerText = score;
   document.getElementById("result").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
+  document.getElementById("prevBtn").disabled = (index === 0);
 }
 
 function check() {
   let userText = document.getElementById("input").value;
-  let user = normalize(userText);
-  let correct = normalize(data[index].en);
-
-  if (!userText.trim()) { alert("請先輸入答案喔！"); return; }
+  if (!userText.trim()) { alert("請先輸入答案內容喔！"); return; }
+  
   userResponses[index] = userText;
+  let user = superNormalize(userText);
+  let correct = superNormalize(data[index].en);
 
   if (user === correct) {
-    document.getElementById("result").innerHTML = "<span class='correct'>✅ 完全正確！1秒後自動跳下一題...</span>";
+    document.getElementById("result").innerHTML = "<span class='correct'>✅ 正確！(標點與空格已自動忽略)</span>";
     score += 10;
-    setTimeout(next, 1000);
+    setTimeout(next, 800);
   } else {
-    document.getElementById("result").innerHTML = "<span class='incorrect'>❌ 內容有誤，請對照藍色答案修正。</span>";
+    document.getElementById("result").innerHTML = "<span class='incorrect'>❌ 內容有誤，請參考藍色答案：</span>";
     document.getElementById("answer").innerHTML = "<div class='blue-answer'>💡 參考答案：<br>" + data[index].en + "</div>";
   }
 }
 
-function next() { if (index < data.length) { index++; load(); } }
-function prev() { userResponses[index] = document.getElementById("input").value; if (index > 0) { index--; load(); } }
+function next() {
+  userResponses[index] = document.getElementById("input").value;
+  if (index < data.length) { index++; load(); }
+}
+
+function prev() {
+  userResponses[index] = document.getElementById("input").value;
+  if (index > 0) { index--; load(); }
+}
+
+function reset() {
+  if(confirm("確定要重來嗎？")) { index = 0; score = 0; userResponses.fill(""); load(); }
+}
 
 load();
 </script>
