@@ -3,167 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>英文翻譯複習 - 綜合單元版</title>
+  <title>英文翻譯複習 - 高中句型練習</title>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(to bottom, #f0f4ff, #e6f0ff); margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 720px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 24px; }
-    h1 { text-align: center; color: #2c5282; margin-bottom: 15px; }
-    
-    /* 單元選擇按鈕 */
-    .unit-selector { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
-    .unit-btn { padding: 8px 15px; border: 2px solid #4299e1; background: white; color: #4299e1; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-    .unit-btn.active { background: #4299e1; color: white; }
-
-    .progress { text-align: center; margin-bottom: 20px; font-weight: bold; color: #666; }
-    .chinese { font-size: 1.2rem; margin-bottom: 12px; font-weight: bold; background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 5px solid #4299e1; line-height: 1.5; }
-    textarea { width: 100%; min-height: 100px; padding: 12px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
-    textarea:focus { border-color: #4299e1; }
-    
+    body { font-family: system-ui, sans-serif; background: #f0f4ff; padding: 20px; }
+    .container { max-width: 720px; margin: 0 auto; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #2c5282; }
+    .progress { text-align: center; margin-bottom: 20px; }
+    .chinese { font-size: 1.2rem; margin-bottom: 12px; font-weight: bold; }
+    textarea { width: 100%; min-height: 100px; padding: 10px; font-size: 1.1rem; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; }
     .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-    .btn { flex: 1; padding: 12px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+    .btn { flex: 1; padding: 12px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
     .check-btn { background: #4299e1; color: white; }
     .nav-btn { background: #a0aec0; color: white; }
-    .reset-btn { background: #f6ad55; color: white; width: 100%; margin-top: 10px; }
-    .btn:hover { opacity: 0.8; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    
-    #result { margin-top: 15px; font-weight: bold; min-height: 1.5em; }
+    #result { margin-top: 15px; font-weight: bold; }
     .correct { color: #48bb78; }
     .incorrect { color: #f56565; }
-    .blue-answer { color: #2b6cb0; font-weight: bold; margin-top: 10px; padding: 15px; background: #ebf8ff; border-radius: 5px; border-left: 5px solid #2b6cb0; line-height: 1.6; }
+    /* 藍色參考答案 */
+    .blue-answer { color: #2b6cb0; font-weight: bold; margin-top: 10px; padding: 10px; background: #ebf8ff; border-radius: 5px; line-height: 1.5; }
   </style>
 </head>
-
 <body>
 <div class="container">
-  <h1>✍️ 英文翻譯單元練習</h1>
-
-  <div class="unit-selector">
-    <button class="unit-btn active" onclick="switchUnit('R1')">妙妙 R1</button>
-    <button class="unit-btn" onclick="switchUnit('R2')">妙妙 R2</button>
-    <button class="unit-btn" onclick="switchUnit('L3')">課本 L3</button>
-    <button class="unit-btn" onclick="switchUnit('L4')">課本 L4</button>
-  </div>
-
-  <div class="progress">
-    <span id="unitTitle">妙妙卷 R1</span> | 第 <span id="current">1</span> / <span id="total">0</span> 題
-  </div>
-
-  <div class="card" id="quizContainer">
+  <h1>✍️ 英文翻譯複習</h1>
+  <div class="progress">第 <span id="current">1</span> / <span id="total">8</span> 題 | 得分：<span id="score">0</span></div>
+  <div class="card">
     <div id="question" class="chinese"></div>
     <textarea id="input" placeholder="請在此輸入英文翻譯..."></textarea>
-
     <div class="btn-group">
-      <button class="btn nav-btn" id="prevBtn" onclick="prev()">⬅️ 上一題</button>
+      <button class="btn nav-btn" onclick="prev()">⬅️ 上一題</button>
       <button class="btn check-btn" onclick="check()">🔍 檢查答案</button>
-      <button class="btn nav-btn" id="nextBtn" onclick="next()">下一題 ➡️</button>
     </div>
-    <button class="btn reset-btn" onclick="resetUnit()">🔄 本單元重來</button>
-
     <div id="result"></div>
     <div id="answer"></div>
   </div>
 </div>
 
 <script>
-const allData = {
-  'R1': [
-    { zh: "為了保持競爭力，這家公司投入了大量的資源在研發上。", en: "In order to stay competitive, the company has invested a large amount of resources in research and development." },
-    { zh: "據報導，這場地震造成了數百棟建築物的嚴重損壞。", en: "It is reported that the earthquake caused severe damage to hundreds of buildings." }
-  ],
-  'R2': [
-    { zh: "除非我們能找到解決能源危機的方法，否則後果將難以想像。", en: "Unless we can find a solution to the energy crisis, the consequences will be unimaginable." },
-    { zh: "這項新科技不僅提升了工作效率，也徹底改變了我們的生活方式。", en: "This new technology not only improves work efficiency but also completely changes our way of life." }
-  ],
-  'L3': [
-    { zh: "在那位受歡迎的歌手出現後，粉絲們爆發出了震耳欲聾的歡呼聲。", en: "Upon the popular singer's appearance, the fans burst into deafening cheers." },
-    { zh: "這個計畫能否成功取決於團隊成員之間是否能有效合作。", en: "Whether the plan will succeed depends on whether the team members can cooperate effectively." }
-  ],
-  'L4': [
-    { zh: "這座城市以其美麗的夜景聞名，吸引了來自世界各地的觀光客。", en: "The city is famous for its beautiful night view, attracting tourists from all over the world." },
-    { zh: "面對困難時，保持積極的態度並尋求他人的幫助是很重要的。", en: "When facing difficulties, it is important to maintain a positive attitude and seek help from others." }
-  ]
-};
+const data = [
+  { zh:"為了要考上理想的大學，高中生在課業與課外活動之間取得平衡是很重要的。", en:"To get admitted to the ideal university, it is crucial that high school students strike a balance between their schoolwork and extracurricular activities." },
+  { zh:"你的計畫是否能夠進展順利取決於你願意付出多少努力於其中。", en:"Whether your plan will be on track depends on how much effort you are willing to put in." },
+  { zh:"那些勇於冒險的觀光客們似乎已經在未經許可的情況下進入了原住民部落的私人領域。", en:"Those adventurous tourists seem to have entered the private areas of the indigenous tribe without permission." },
+  { zh:"隨著飛魚季節即將到來，達悟族人遵循傳統準則，以確保當地的物種不會被干擾。", en:"With the flying fish season to come, the Tao people follow traditional guidelines to guarantee that local species will not be disturbed." },
+  { zh:"位於巴黎市區的羅浮宮是舉世聞名的博物館，也是熱門旅遊景點。", en:"Located in central Paris, the Louvre is a world-famous museum as well as a hot tourist attraction." },
+  { zh:"2025年10月，館內收藏的數件皇室珠寶遭竊，引發對博物館安全性的憂慮。", en:"In October 2025, several pieces of royal jewelry from the museum's collection were stolen, raising concerns about museum security." },
+  { zh:"熊在秋天會大量進食以儲存足夠的脂肪過冬。", en:"In fall, bears eat a lot to store enough fat for the winter." },
+  { zh:"如果食物短缺，他們將無法冬眠，並可能在尋找食物時與人類發生衝突。", en:"If there isn't enough food, they won't be able to hibernate and may come into conflict with humans while searching for food." }
+];
 
-let currentUnit = 'R1';
 let index = 0;
-let userResponses = { 'R1': [], 'R2': [], 'L3': [], 'L4': [] };
+let score = 0;
+let userResponses = new Array(data.length).fill("");
 
-// 超級寬鬆判定：移除所有標點，並把多個空格縮減為一個
-function superNormalize(s) {
-  return s.toLowerCase()
-          .replace(/[.,!?;:"']/g, " ")
-          .replace(/\s+/g, " ")
-          .trim();
-}
-
-function switchUnit(unitKey) {
-  currentUnit = unitKey;
-  index = 0;
-  
-  document.querySelectorAll('.unit-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if(btn.innerText.includes(unitKey)) btn.classList.add('active');
-  });
-
-  const names = {'R1':'妙妙卷 R1', 'R2':'妙妙卷 R2', 'L3':'課本 L3', 'L4':'課本 L4'};
-  document.getElementById("unitTitle").innerText = names[unitKey];
-  
-  load();
+function normalize(s) {
+  // 修正重點：將所有標點符號取代為空格，並將多個空格縮減為一個，確保判定更寬鬆
+  return s.toLowerCase().replace(/[.,!?]/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function load() {
-  const data = allData[currentUnit];
   if (index >= data.length) {
-    document.getElementById("quizContainer").innerHTML = `<h2>🎉 ${document.getElementById("unitTitle").innerText} 完成！</h2><button class='btn check-btn' onclick='location.reload()'>回主選單</button>`;
+    document.querySelector(".card").innerHTML = "<h2>🎉 恭喜完成！</h2><p>最終得分：" + score + "</p><button class='btn check-btn' onclick='location.reload()'>再練習一次</button>";
     return;
   }
-  
   document.getElementById("question").innerText = data[index].zh;
-  document.getElementById("input").value = userResponses[currentUnit][index] || "";
+  document.getElementById("input").value = userResponses[index];
   document.getElementById("current").innerText = index + 1;
   document.getElementById("total").innerText = data.length;
+  document.getElementById("score").innerText = score;
   document.getElementById("result").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
-  document.getElementById("prevBtn").disabled = (index === 0);
 }
 
 function check() {
-  const data = allData[currentUnit];
   let userText = document.getElementById("input").value;
-  if (!userText.trim()) { alert("請先輸入答案！"); return; }
-  
-  userResponses[currentUnit][index] = userText;
-  
-  if (superNormalize(userText) === superNormalize(data[index].en)) {
-    document.getElementById("result").innerHTML = "<span class='correct'>✅ 正確！(標點與空格已忽略) 1秒後自動跳題...</span>";
+  let user = normalize(userText);
+  let correct = normalize(data[index].en);
+
+  if (!userText.trim()) { alert("請先輸入答案喔！"); return; }
+  userResponses[index] = userText;
+
+  if (user === correct) {
+    document.getElementById("result").innerHTML = "<span class='correct'>✅ 完全正確！1秒後自動跳下一題...</span>";
+    score += 10;
     setTimeout(next, 1000);
   } else {
-    document.getElementById("result").innerHTML = "<span class='incorrect'>❌ 內容有誤，請對照藍色答案：</span>";
-    document.getElementById("answer").innerHTML = `<div class='blue-answer'>💡 參考答案：<br>${data[index].en}</div>`;
+    document.getElementById("result").innerHTML = "<span class='incorrect'>❌ 內容有誤，請對照藍色答案修正。</span>";
+    document.getElementById("answer").innerHTML = "<div class='blue-answer'>💡 參考答案：<br>" + data[index].en + "</div>";
   }
 }
 
-function next() {
-  const data = allData[currentUnit];
-  userResponses[currentUnit][index] = document.getElementById("input").value;
-  if (index < data.length) { index++; load(); }
-}
+function next() { if (index < data.length) { index++; load(); } }
+function prev() { userResponses[index] = document.getElementById("input").value; if (index > 0) { index--; load(); } }
 
-function prev() {
-  userResponses[currentUnit][index] = document.getElementById("input").value;
-  if (index > 0) { index--; load(); }
-}
-
-function resetUnit() {
-  if(confirm("確定要重來本單元嗎？")) {
-    userResponses[currentUnit] = [];
-    index = 0;
-    load();
-  }
-}
-
-switchUnit('R1');
+load();
 </script>
 </body>
 </html>
