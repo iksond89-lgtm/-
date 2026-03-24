@@ -44,7 +44,7 @@
     <button class="unit-btn" onclick="switchUnit('L4')">課本 L4</button>
     <button class="unit-btn" onclick="switchUnit('R1')">妙妙 R1</button>
     <button class="unit-btn" onclick="switchUnit('R2')">妙妙 R2</button>
-    <button class="unit-btn unit-all" onclick="switchUnit('ALL')">✨ 一起上(隨機)</button>
+    <button class="unit-btn unit-all" onclick="switchUnit('ALL')">一起上❤️(隨機)</button>
   </div>
 
   <div class="progress">
@@ -160,7 +160,7 @@ function check() {
     document.getElementById("result").innerHTML = "<span class='correct'>✅ 正確！自動跳下一題...</span>";
     setTimeout(next, 800);
   } else {
-    document.getElementById("result").innerHTML = "<span class='incorrect'>❌ 有誤，請參考藍色答案：</span>";
+    document.getElementById("result").innerHTML = "<span class='incorrect'>❌ 答錯了傻逼：</span>";
     document.getElementById("answer").innerHTML = `<div class='blue-answer'>💡 參考答案：<br>${activeData[index].en}</div>`;
   }
 }
